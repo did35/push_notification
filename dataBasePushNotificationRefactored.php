@@ -16,36 +16,29 @@ $datesBlueAndRed = array("27-01-2016", "24-02-2016", "23-03-2016", "20-04-2016",
 $datesBlueDisk = array("10-02-2016", "09-03-2016", "06-04-2016", "04-05-2016", "01-06-2016", "29-06-2016", "27-07-2016", "24-08-2016", "21-09-2016", "19-10-2016", "16-11-2016", "14-12-2016", "11-01-2017");
 $datesTerrainDataBase = array("24-02-2016", "20-04-2016", "15-06-2016", "08-08-2016", "05-10-2016", "30-11-2016");
 
-for ($i = 0; $i < count($blueWithRedDisk); $i++) {
-    $subject = "Blue and Red disk up-date";
-    $message = "Blue disk # " . $blueWithRedDisk[$i] . " and Red disk cycle " . $redDisk[$i] . " are available for download at:\n\nhttps://inds.epicinds.com/epic/login";
-    
-    if($todays_date == $datesBlueAndRed[$i]){
-        for ($p = 0; $p < count($pilots); $p++) {
-        mail($pilots[$p], $subject, $message);
-        } 
-    }   
-}
-      
-for ($x = 0; $x < count($blueDisk); $x++) {
-    $subject2 = "Blue disk up-date";
-    $message2 = "Blue disk # " . $blueDisk[$x] . " is available for download at:\n\nhttps://inds.epicinds.com/epic/login";
-    
-    if ($todays_date == $datesBlueDisk[$x]) {
-        for ($p = 0; $p < count($pilots); $p++) {
-        mail($pilots[$p], $subject2, $message2);
-        }
-    } 
+if ($i = getIndex($todays_date, $datesBlueAndRed) > -1 ) {
+    $message = "Blue disk #" . $blueWithRedDisk[$i] . "and Red dsk cycle" . $redDisk[$i] . "are available for download at:\n\nhttps://inds.epicinds.com/epic/login";
+    sendMailToPilots ("Blue and Red disk up-date", $message, $pilots);
+} else if ($i = getIndex($todays_date, $datesBlueDisk) > -1 ) {
+    $message = "Blue disk #" . $blueDisk[$i] . "is available for download at:\n\nhttps://inds.epicinds.com/epic/login";
+    sendMailToPilots("Blue disk up-date", $message, $pilots);
+} else if ($i = getIndex($todays_date, $datesTerrainDataBase) > -1 ) {
+    $message = $tdb[$i] . "is available for download at:\n\nhttps://inds.epicinds.com/epic/login";
+    sendMailToPilots("Terrain database up-date", $message, $pilots);
 }
 
-for ($y = 0; $y < count($tdb); $y++) {
-    $subject3 = "Terrain database up-date";
-    $message3 = $tdb[$y] . " is available for download at:\n\nhttps://inds.epicinds.com/epic/login";
-    
-    if ($todays_date == $datesTerrainDataBase[$y]) {
-        for ($p = 0; $p < count($pilots); $p++) {
-        mail($pilots[$p], $subject3, $message3);
+function sendMailToPilots($subject, $message, $pilots) {
+    for ($p = 0; $p < count($pilots); $p++) {
+        mail($pilots[$p], $subject, $message);
+    }
+}
+
+function getIndex($todays_date, $dates) {
+    for ($i = 0; $i < count($dates); $i++) {
+        if ($todays_date == $dates[$i]) {
+            return $i;
+            return -1;
         }
-    } 
+    }
 }
 ?>
